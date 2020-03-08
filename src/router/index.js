@@ -1,14 +1,40 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Login from '../components/Login.vue'
+import Exercises from '../components/Exercises.vue'
+import store from '../store/index'
+import AllModules from '../components/AllModules.vue'
 
 Vue.use(VueRouter)
 
+async function beforeEnter (_to, _FormData, next) {
+  if (!store.getters['user/isAuthenticated']) {
+    await store.dispatch('user/fetchUser')
+  }
+  if (store.getters['user/isAuthenticated']) {
+    next()
+    return
+  }
+  next('/login')
+}
+
 const routes = [
   {
+    path: '/allModules',
+    name: 'AllModules',
+    component: AllModules,
+    beforeEnter
+  },
+  {
+    path: '/exercises',
+    name: 'Exercises',
+    component: Exercises,
+    beforeEnter
+  },
+  {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'Login',
+    component: Login
   },
   {
     path: '/about',
