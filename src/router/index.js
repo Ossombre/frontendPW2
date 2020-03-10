@@ -4,6 +4,7 @@ import Login from '../components/Login.vue'
 import Exercises from '../components/Exercises.vue'
 import store from '../store/index'
 import AllModules from '../components/AllModules.vue'
+import Module from '../views/Module.vue'
 
 Vue.use(VueRouter)
 
@@ -19,6 +20,12 @@ async function beforeEnter (_to, _FormData, next) {
 }
 
 const routes = [
+  {
+    path: '/module/:id',
+    name: 'Module',
+    component: Module,
+    beforeEnter
+  },
   {
     path: '/allModules',
     name: 'AllModules',

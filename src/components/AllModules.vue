@@ -1,50 +1,55 @@
 <template>
-  <v-container>
-    <v-layout
-      text-center
-      wrap
-    >
-      <v-form v-model="valid">
-        <v-container>
-          <v-row>
-              <v-col
-              cols="25"
-              md="4"
-            >
-                <p>test: {{testVuex}}</p>
-            </v-col>
-
-            <v-col
-              cols="20"
-              md="4"
-            ></v-col>
-          </v-row>
-        </v-container>
-      </v-form>
-    </v-layout>
-  </v-container>
+  <v-layout
+    column justify-center align-center
+  >
+    <v-row xs12 sm8 md12 style="max-width: 88rem">
+      <v-col v-for="module in modules" :key="module.id" cols="12">
+        <h2>
+          <router-link :to="`/module/${module.id}`" style="text-decoration: none">
+            {{ module.name }}
+          </router-link>
+        </h2>
+        <v-row justify="start">
+          <v-card class="ma-2" height="8em" width="16em" v-for="session in getSessionsByModuleId(module.id)" :key="session.id">
+            <v-card-title class="subtitle-1">
+              {{ session.name }}
+            </v-card-title>
+            <v-card-text>
+              Ne rien mettre ici
+            </v-card-text>
+          </v-card>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-layout>
 </template>
+
 <script>
-import { mapState, mapGetters/* , mapActions */, mapMutations } from 'vuex'
+import { mapState, mapGetters, mapActions /* , mapMutations */ } from 'vuex'
 
 export default {
   name: 'AllModules',
   data: () => ({
-    valid: false,
-    testVuex: 'HEY'
   }),
   computed: {
-    ...mapState('modules', ['modules']),
     ...mapGetters('modules', ['getModuleById']),
-    ...mapMutations('modules', ['addModule']),
-    ...mapGetters('user', ['isAuthenticated'])
+    ...mapGetters('sessions', ['getSessionsByModuleId']),
+    ...mapGetters('user', ['isAuthenticated']),
+    ...mapState('modules', ['modules'])
   },
-  created () {
-    this.testVuex = this.getModuleById(1).name
-    console.log('' + this.isAuthenticated())
+  async mounted () {
+    await this.fetchModules()
+    await Promise.all(
+      this.modules.map(m => this.fetchSessionsForModule({ moduleId: m.id }))
+    )
+  },
+  async created () {
+    console.log('user properly authenticated: ' + this.isAuthenticated)
   },
   methods: {
-
+    ...mapActions('sessions', ['fetchSessionsForModule']),
+    ...mapActions('modules', ['fetchModule']),
+    ...mapActions('modules', ['fetchModules'])
   }
 }
 </script>

@@ -27,6 +27,7 @@
                 v-model="password"
                 :rules="passwordRules"
                 label="password"
+                type="password"
                 required
               ></v-text-field>
             </v-col>
@@ -46,7 +47,7 @@
 
 <script>
 
-import { /* mapState, */ mapGetters/* , mapActions *//* , mapMutations */ } from 'vuex'
+import { /* mapState, *//* mapGetters, */ mapActions /* , mapMutations */ } from 'vuex'
 
 export default {
   name: 'Login',
@@ -61,9 +62,6 @@ export default {
       v => !!v || 'Password is required'
     ]
   }),
-  computed: {
-    ...mapGetters('user', ['login'])
-  },
   created () {
     this.checkCurrentLogin()
   },
@@ -71,6 +69,7 @@ export default {
     this.checkCurrentLogin()
   },
   methods: {
+    ...mapActions('user', ['login']),
     checkCurrentLogin () {
       if (this.currentUser) {
         this.$router.replace(this.$route.query.redirect || '/allModules')
@@ -79,17 +78,18 @@ export default {
     async buttonClicked () {
       if (!this.valid) return
       console.log('the button is clicked', this.email, this.password)
-      const username = this.email
-      const password = this.password
+      // const username = this.email
+      // const password = this.password
       try {
-        const result = await this.axios.post('http://localhost:3000/api/v1/login', {
-          username,
-          password
+        /* const result = await this.axios.post('http://localhost:3000/api/v1/login', null, {
+          params: {
+            username,
+            password
+          }
         })
-        this.user = result.data
+        this.user = result.data */ // THIS WAS FOR TP1
         this.loggedIn = true
-        this.login({ email: this.email, password: this.password })
-        console.log('YOU DID IT YOU MAD LAD')
+        await this.login({ email: this.email, password: this.password })
         this.$router.push('/allModules')
       } catch (err) {
         console.log('err', err)
