@@ -11,7 +11,7 @@
           </router-link>
         </h2>
         <v-row justify="start">
-          <v-card class="ma-2" height="8em" width="16em" v-for="exercise in getExercisesBySessionId(session.id)" :key="exercise.id">
+          <v-card class="ma-2" height="8em" width="16em" v-for="exercise in getExercisesBySessionId(session.id)" :key="exercise.id" v-bind:style="{ background: getColor(exercise) }">
             <v-card-title class="subtitle-1">
               {{ exercise.title }}
             </v-card-title>
@@ -58,6 +58,13 @@ export default {
     )
   },
   methods: {
+    getColor: function (exercise) {
+      if (exercise.valid) {
+        return '#46A73A'
+      } else {
+        return 'default'
+      }
+    },
     ...mapActions('sessions', ['fetchSessionsForModule']),
     ...mapActions('modules', ['fetchModule']),
     ...mapActions('exercises', ['fetchExercisesForSession'])

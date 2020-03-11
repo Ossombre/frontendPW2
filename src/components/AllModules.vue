@@ -14,9 +14,6 @@
             <v-card-title class="subtitle-1">
               {{ session.name }}
             </v-card-title>
-            <v-card-text>
-              Ne rien mettre ici
-            </v-card-text>
           </v-card>
         </v-row>
       </v-col>
