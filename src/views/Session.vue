@@ -2,8 +2,8 @@
   <v-layout
     column justify-center style="margin-left: 20px"
   >
-    <v-row xs12 sm8 md12 style="max-width: 32rem">
-      <v-col>
+    <v-row xs12 sm8 md12>
+      <v-col style="max-width: 16rem">
         <v-row justify="start">
           <v-card @click="exerciseClicked(exercise.id)" class="ma-2" height="8em" width="16em" v-for="exercise in getExercisesBySessionId(session.id)" :key="exercise.id" v-bind:style="{ background: getColor(exercise) }">
             <v-card-title class="subtitle-1">
@@ -15,30 +15,39 @@
           </v-card>
         </v-row>
       </v-col>
-      <v-col v-if="this.exoValid">
+      <v-col v-if="this.exoValid" style="max-width: 42rem">
         <Exercise :sessionId="this.sessionId" :exerciseId="exoId" :key="componentKey"/>
       </v-col>
+      <!--v-col v-if="this.exoValid" style="max-width: 42rem">
+        <TestResults :results="this.testsOutput"/>
+      </v-col-->
     </v-row>
   </v-layout>
 </template>
 
 <script>
-import { /* mapState, */ mapGetters, mapActions /* , mapMutations */ } from 'vuex'
+import { /* mapState, */mapGetters, mapActions /* , mapMutations */ } from 'vuex'
 import Exercise from '../components/Exercise'
+// import TestResults from '../components/TestResults'
 
 export default {
   name: 'Session',
   data: () => ({
     componentKey: 0,
     exoValid: false,
-    exoId: 0 // default value that should not throw errors
+    exoId: 0// , // default value that should not throw errors
+    // testsOutput: null,
+    // exercise: null
   }),
   components: {
-    Exercise
+    Exercise// ,
+    // TestResults
   },
   computed: {
     ...mapGetters('exercises', ['getExercisesBySessionId']),
     ...mapGetters('sessions', ['getSessionById']),
+    ...mapGetters('exercises', ['getExerciseById']),
+    // ...mapState('attempts', ['lastAttemptResults']),
     session () {
       return this.getSessionById(this.sessionId) ||
         { name: 'Loading..' }
@@ -55,6 +64,21 @@ export default {
     exerciseClicked: function (exerciseId) {
       this.exoValid = true
       this.exoId = exerciseId
+      /* this.exercise = this.getExerciseById(this.exerciseId)
+      if (!this.lastAttemptResults || !this.lastAttemptResults.tests) {
+        if (!this.exercise.test_names) {
+          this.testsOutput = { tests: [] }
+        } else {
+          this.testsOutput = {
+            tests: this.exercise.test_names.map(t => ({
+              placeholder: true,
+              name: t
+            }))
+          }
+        }
+      } else {
+        this.testsOutput = this.lastAttemptResults
+      } */
       this.componentKey += 1
     },
     getColor: function (exercise) {

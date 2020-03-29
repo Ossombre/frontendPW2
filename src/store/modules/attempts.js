@@ -49,7 +49,7 @@ const actions = {
       commit('addAttempt', { attempt: data })
     } catch (err) {
       // if 404 error, ignore the error, if not, throw
-      if (err.response.status !== 404) {
+      if (err.response && err.response.status !== 404) {
         throw err
       }
     }
